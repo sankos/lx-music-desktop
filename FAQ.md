@@ -2,6 +2,7 @@
 
 本文档已迁移到：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
 
+<!--
 在阅读本常见问题后，仍然无法解决你的问题，请提交issue或者加企鹅群`830125506`反馈（无事勿加，入群先看群公告），反馈时请**注明**已阅读常见问题！
 
 ## ~~软件为什么没有桌面歌词与自定义列表功能~~
@@ -49,7 +50,7 @@
 
 ### 提示 `getaddrinfo EAI_AGAIN ...` 或 `无法连接到服务器`
 
-尝试在在浏览器打开这个地址`http://ts.tempmusic.tk`，浏览器显示404是正常的，如果不是404那就证明所在网络无法访问接口服务器。
+尝试在在浏览器打开这个地址`http://ts.tempmusics.tk`，浏览器显示404是正常的，如果不是404那就证明所在网络无法访问接口服务器。
 若网页无法打开或打开来不是404，则可能是DNS的问题，可以尝试以下办法：
 
 1. 将DNS改成自动获取试试（注：改完可能需要清理下系统DNS缓存才生效）
@@ -68,7 +69,7 @@
 5. 若还不行请到这个链接查看详情：<https://github.com/lyswhut/lx-music-desktop/issues/5>
 6. 若没有在第5条链接中的第一条评论中看到接口无法使用的说明，则应该是你网络无法访问接口服务器的问题，如果接口有问题我会在那里说明。
 
-想要知道是不是自己网络的问题可以看看`http://ts.tempmusic.tk`能不能在浏览器打开，浏览器显示404是正常的，如果不是404那就证明所在网络无法访问接口服务器。
+想要知道是不是自己网络的问题可以看看`http://ts.tempmusics.tk`能不能在浏览器打开，浏览器显示404是正常的，如果不是404那就证明所在网络无法访问接口服务器。
 若网页无法打开或打来不是404，则应该是DNS的问题，可以尝试以下办法：
 
 1. 将DNS改成自动获取试试
@@ -177,6 +178,23 @@
 3. 若移动端无法打开第2步的地址，则在PC端的浏览器地址栏输入并打开该地址，若可以打开，则要么是被LX Music PC端被电脑防火墙拦截，要么PC端与移动端不在同一个网络下，或者路由器开启了AP隔离（一般在公共网络下会出现这种情况）
 
 ## 界面异常（界面显示不完整）
+
+### Windows 10、11界面异常、界面无法显示
+
+尝试添加运行参数 `--disable-gpu-sandbox` 启动，例如：`.\lx-music-desktop.exe --disable-gpu-sandbox`，添加方法可自行百度“给快捷方式加参数”。
+
+若以上方法无效，则尝试将 `--disable-gpu-sandbox` 逐个换成以下参数启动，直到恢复正常为止：
+
+- `--no-sandbox`
+- `-dha`
+- `--disable-gpu`
+
+:::caution
+这些参数会禁用程序的某些安全特性或降低程序性能，没有遇到问题不要使用它们！
+:::
+
+对于界面无法显示，任务栏里也没看到图标，但是任务管理器里面看到进程的问题，还可尝试更换软件安装目录（对于安装版需要先卸载再换目录安装，绿色版直接剪切移动即可，只要目录换了就行），<br />
+此方法的相关讨论看：<https://github.com/lyswhut/lx-music-desktop/issues/943#issuecomment-1217832186>
 
 ### Windows 7 下界面异常
 
@@ -352,7 +370,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 
 - URL统一以`lxmusic://`开头
 - 若无特别说明，源的可用值为：`kw/kg/tx/wy/mg`
-- 若无特别说明，音质的可用值为：`128k/320k/flac/flac32bit`
+- 若无特别说明，音质的可用值为：`128k/320k/flac/flac24bit`
 
 目前支持两种传参方式：
 
@@ -447,7 +465,7 @@ send(EVENT_NAMES.inited, {
       name: '酷我音乐',
       type: 'music',  // 目前固定为 music
       actions: ['musicUrl'], // 目前固定为 ['musicUrl']
-      qualitys: ['128k', '320k', 'flac'], // 当前脚本的该源所支持获取的Url音质，有效的值有：['128k', '320k', 'flac']
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'], // 当前脚本的该源所支持获取的Url音质，有效的值有：['128k', '320k', 'flac', 'flac24bit']
     },
   },
 })
@@ -489,8 +507,8 @@ send(EVENT_NAMES.inited, {
 
 | 事件名 | 描述
 | --- | ---
-| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，有效的值为`['128k', '320k', 'flac']`，该字段用于控制应用可用的音质类型
-| `request` | 应用API请求事件名，回调入参：`handler({ source, action, info})`，回调必须返回`Promise`对象<br>`source`：音乐源，可能的值取决于初始化时传入的`sources`对象的源key值<br>`info`：请求附加信息，内容根据`action`变化<br>`action`：请求操作类型，目前只有`musicUrl`，即获取音乐URL链接，需要在 Promise 返回歌曲 url，`info`的结构：`{type, musicInfo}`，`info.type`：音乐质量，可能的值有`128k` / `320k` / `flac`（取决于初始化时对应源传入的`qualitys`值中的一个），`info.musicInfo`：音乐信息对象，里面有音乐ID、名字等信息
+| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，有效的值为`['128k', '320k', 'flac', 'flac24bit']`，该字段用于控制应用可用的音质类型
+| `request` | 应用API请求事件名，回调入参：`handler({ source, action, info})`，回调必须返回`Promise`对象<br>`source`：音乐源，可能的值取决于初始化时传入的`sources`对象的源key值<br>`info`：请求附加信息，内容根据`action`变化<br>`action`：请求操作类型，目前只有`musicUrl`，即获取音乐URL链接，需要在 Promise 返回歌曲 url，`info`的结构：`{type, musicInfo}`，`info.type`：音乐质量，可能的值有`128k` / `320k` / `flac` / `flac24bit`（取决于初始化时对应源传入的`qualitys`值中的一个），`info.musicInfo`：音乐信息对象，里面有音乐ID、名字等信息
 | `updateAlert` | 显示源更新弹窗，发送该事件时的参数：`{log, updateUrl}`<br>`log`：更新日志，必传，字符串类型，内容可以使用`\n`换行，最大长度1024，超过此长度后将被截取超出的部分<br>`updateUrl`：更新地址，用于引导用户去该地址更新源，选传，需为http协议的url地址，最大长度1024<br>此事件每次运行脚本只能调用一次（源版本v1.2.0新增）<br>例子：`lx.send(lx.EVENT_NAMES.updateAlert, { log: 'hello world', updateUrl: 'https://xxx.com' })`
 
 
@@ -545,4 +563,4 @@ const cancelHttp = window.lx.request(url, options, callback)
 - `window.lx.utils.crypto.randomBytes`：生成随机字符串 `randomBytes(size)`
 - `window.lx.utils.crypto.rsaEncrypt`：RSA加密 `rsaEncrypt(buffer, key)`
 
-目前仅提供以上工具方法，如果需要其他方法可以开issue讨论。
+目前仅提供以上工具方法，如果需要其他方法可以开issue讨论。 -->
